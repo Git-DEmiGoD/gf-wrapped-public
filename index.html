@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Girlfriend Wrapped 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --pink:#FF5C8A;--amber:#FFB347;--mint:#A8E6CF;--lav:#C9B8FF;--dark:#100608;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bot:env(safe-area-inset-bottom,0px);
+}
+html{height:100%;height:-webkit-fill-available;}
+body{
+  width:100%;height:100vh;height:-webkit-fill-available;
+  overflow:hidden;background:var(--dark);
+  font-family:'DM Sans',sans-serif;cursor:none;
+  display:flex;align-items:center;justify-content:center;
+}
+@media(hover:none){body{cursor:auto;}}
+
+/* cursor — desktop only */
+#cur{position:fixed;width:14px;height:14px;border-radius:50%;background:var(--pink);
+  pointer-events:none;z-index:9999;transform:translate(-50%,-50%);
+  transition:width .15s,height .15s;mix-blend-mode:difference;}
+@media(hover:none){#cur{display:none;}}
+
+/* BG blobs */
+#bgc{position:fixed;inset:0;z-index:0;overflow:hidden;}
+.bs{position:absolute;border-radius:50%;opacity:.05;animation:bf linear infinite;}
+@keyframes bf{0%{transform:translateY(0)rotate(0)}50%{transform:translateY(-40px)rotate(180deg)}100%{transform:translateY(0)rotate(360deg)}}
+
+/* heart particles */
+.hp{position:fixed;pointer-events:none;z-index:9000;font-size:20px;animation:hf 1.1s ease-out forwards;}
+@keyframes hf{0%{opacity:1;transform:translateY(0)scale(1)}100%{opacity:0;transform:translateY(-100px)scale(.3)}}
+
+/* ---- SLIDE SYSTEM ---- */
+#sw{position:relative;z-index:10;width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+
+.slide{
+  position:absolute;
+  width:min(480px,96vw);
+  height:min(680px,calc(100vh - 90px - var(--safe-top) - var(--safe-bot)));
+  border-radius:28px;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+  opacity:0;transform:translateX(100px) scale(.93);
+  transition:opacity .48s cubic-bezier(.16,1,.3,1),transform .48s cubic-bezier(.16,1,.3,1);
+  pointer-events:none;overflow:hidden;
+  padding:32px 28px 28px;
+}
+.slide.active{opacity:1;transform:none;pointer-events:all;}
+.slide.exit-left{opacity:0;transform:translateX(-100px) scale(.93);}
+.slide.exit-right{opacity:0;transform:translateX(100px) scale(.93);}
+
+.slide::before{content:'';position:absolute;width:260px;height:260px;border-radius:50%;
+  opacity:.07;background:radial-gradient(circle,white,transparent);top:-80px;right:-70px;pointer-events:none;}
+
+/* themes */
+.t-intro{background:linear-gradient(145deg,#1a0010,#3a0028);border:1px solid rgba(255,92,138,.35);}
+.t-pink {background:linear-gradient(145deg,#2a0013,#160008);border:1px solid rgba(255,92,138,.25);}
+.t-amber{background:linear-gradient(145deg,#2a1400,#160b00);border:1px solid rgba(255,179,71,.25);}
+.t-mint {background:linear-gradient(145deg,#001710,#000c07);border:1px solid rgba(168,230,207,.2);}
+.t-lav  {background:linear-gradient(145deg,#0b0018,#06000e);border:1px solid rgba(201,184,255,.25);}
+.t-coral{background:linear-gradient(145deg,#2a0700,#160300);border:1px solid rgba(255,110,60,.25);}
+.t-gold {background:linear-gradient(145deg,#180f00,#261a00);border:1px solid rgba(255,215,0,.2);}
+.t-blue {background:linear-gradient(145deg,#000e28,#000613);border:1px solid rgba(100,160,255,.2);}
+.t-final{background:linear-gradient(145deg,#1a0010,#2a0018);border:1px solid rgba(255,92,138,.45);}
+
+/* scrollable inner — no visible scroll */
+.inner{
+  width:100%;display:flex;flex-direction:column;align-items:center;
+  overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:none;-ms-overflow-style:none;
+  max-height:100%;
+  padding:4px 2px;
+}
+.inner::-webkit-scrollbar{display:none;}
+
+/* typography */
+.lbl{font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(255,255,255,.38);margin-bottom:12px;flex-shrink:0;}
+.emo{font-size:52px;display:block;margin-bottom:10px;
+  animation:eP .45s cubic-bezier(.34,1.56,.64,1) .15s both;flex-shrink:0;}
+@keyframes eP{from{transform:scale(.2)rotate(-20deg);opacity:0}to{transform:scale(1)rotate(0);opacity:1}}
+.big{font-family:'Syne',sans-serif;font-size:clamp(44px,12vw,72px);font-weight:800;
+  line-height:1;margin-bottom:8px;
+  background:linear-gradient(135deg,#fff,rgba(255,255,255,.6));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ttl{font-family:'Instrument Serif',serif;font-size:clamp(22px,5.5vw,32px);
+  font-weight:400;color:#fff;line-height:1.22;margin-bottom:12px;}
+.ttl em{opacity:.68;}
+.bod{font-size:clamp(12px,3.2vw,14px);color:rgba(255,255,255,.58);
+  line-height:1.68;font-weight:300;max-width:360px;}
+.bod strong{color:rgba(255,255,255,.9);font-weight:500;}
+.div{width:32px;height:2px;background:rgba(255,255,255,.12);border-radius:2px;margin:12px auto;}
+.pill{display:inline-block;padding:4px 12px;border-radius:100px;
+  font-size:11px;font-weight:500;margin:7px 3px 0;}
+.pp{background:rgba(255,92,138,.15);color:#ff8ab0;border:1px solid rgba(255,92,138,.28);}
+.pa{background:rgba(255,179,71,.12);color:#ffca7a;border:1px solid rgba(255,179,71,.28);}
+.pm{background:rgba(168,230,207,.1);color:#a8e6cf;border:1px solid rgba(168,230,207,.22);}
+.pl{background:rgba(201,184,255,.1);color:#c9b8ff;border:1px solid rgba(201,184,255,.22);}
+.pg{background:rgba(255,215,0,.1);color:#ffd700;border:1px solid rgba(255,215,0,.22);}
+
+/* fly-in animation */
+.fi{opacity:0;transform:translateY(20px);animation:fi .5s ease-out forwards;}
+@keyframes fi{to{opacity:1;transform:none}}
+
+/* ---- MEDIA ---- */
+.media-wrap{
+  width:100%;max-width:340px;margin:12px auto 0;
+  border-radius:16px;overflow:hidden;position:relative;
+  background:rgba(0,0,0,.3);flex-shrink:0;
+}
+.media-wrap img{width:100%;display:block;border-radius:16px;
+  object-fit:cover;max-height:220px;}
+.media-wrap video{width:100%;display:block;border-radius:16px;
+  max-height:220px;object-fit:cover;background:#000;}
+
+/* hero image — taller, more dramatic */
+.media-wrap.hero img,.media-wrap.hero video{max-height:280px;}
+
+/* 2-col photo grid */
+.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  width:100%;max-width:340px;margin:12px auto 0;}
+.photo-grid img{width:100%;border-radius:12px;object-fit:cover;height:130px;}
+
+/* caption under media */
+.media-cap{font-size:10px;color:rgba(255,255,255,.28);
+  text-align:center;margin-top:6px;letter-spacing:.5px;}
+
+/* stat grid */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  width:100%;max-width:320px;margin:12px auto 0;}
+.sg-i{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
+  border-radius:12px;padding:10px 8px;text-align:center;}
+.sg-n{font-family:'Syne',sans-serif;font-size:clamp(22px,6vw,28px);font-weight:800;color:#fff;}
+.sg-l{font-size:10px;color:rgba(255,255,255,.36);margin-top:2px;letter-spacing:.5px;}
+
+/* food list */
+.food-list{width:100%;max-width:320px;margin:10px auto 0;text-align:left;}
+.food-list p{font-size:clamp(11px,3vw,13px);color:rgba(255,255,255,.65);
+  padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06);line-height:1.5;}
+.food-list p:last-child{border-bottom:none;}
+.food-list p strong{color:rgba(255,255,255,.9);}
+
+/* ---- GAMES ---- */
+/* quiz */
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  margin:14px auto 0;width:100%;max-width:320px;}
+.qo{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+  border-radius:12px;padding:11px 8px;font-size:clamp(12px,3.5vw,14px);
+  color:rgba(255,255,255,.8);cursor:pointer;
+  transition:all .2s;font-family:'DM Sans',sans-serif;}
+.qo:hover,.qo:active{background:rgba(255,255,255,.12);}
+.qo.correct{background:rgba(168,230,207,.18);border-color:#a8e6cf;color:#a8e6cf;}
+.qo.wrong{background:rgba(255,92,138,.14);border-color:var(--pink);color:#ff8ab0;
+  animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.qres{min-height:22px;font-size:13px;color:rgba(255,255,255,.6);margin-top:10px;transition:opacity .3s;}
+
+/* scratch */
+.sc-wrap{position:relative;width:260px;height:88px;margin:14px auto 0;
+  border-radius:14px;overflow:hidden;cursor:crosshair;flex-shrink:0;}
+.sc-reveal{position:absolute;inset:0;background:linear-gradient(135deg,#2a0013,#450028);
+  border-radius:14px;display:flex;align-items:center;justify-content:center;padding:10px;}
+.sc-reveal p{font-family:'Instrument Serif',serif;font-size:16px;color:#fff;
+  font-style:italic;text-align:center;line-height:1.4;}
+canvas#sc{position:absolute;inset:0;border-radius:14px;touch-action:none;}
+.sc-hint{font-size:10px;color:rgba(255,255,255,.3);margin-top:7px;letter-spacing:1px;}
+
+/* tap reveal */
+.tap-box{
+  position:relative;width:100%;max-width:300px;margin:14px auto 0;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+  border-radius:16px;padding:18px 16px;cursor:pointer;
+  transition:transform .1s,background .2s;overflow:hidden;flex-shrink:0;
+}
+.tap-box:active{transform:scale(.97);}
+.tap-cover{font-size:12px;color:rgba(255,255,255,.32);letter-spacing:1px;text-transform:uppercase;}
+.tap-content{display:none;font-size:clamp(12px,3.2vw,13px);
+  color:rgba(255,255,255,.82);line-height:1.9;text-align:left;}
+.tap-box.open .tap-cover{display:none;}
+.tap-box.open .tap-content{display:block;}
+
+/* wave bars */
+.wave{display:flex;gap:3px;align-items:flex-end;height:28px;margin:12px auto;}
+.wb{width:3px;background:var(--lav);border-radius:2px;animation:wa .8s ease-in-out infinite alternate;}
+@keyframes wa{from{height:4px}to{height:100%}}
+
+/* bg year watermark */
+.yr{position:absolute;bottom:8px;right:14px;font-family:'Syne',sans-serif;
+  font-size:100px;font-weight:800;color:rgba(255,255,255,.025);line-height:1;
+  pointer-events:none;user-select:none;}
+
+/* confetti */
+.cp{position:absolute;width:6px;height:6px;border-radius:2px;
+  opacity:0;animation:cf 3s ease-in forwards;pointer-events:none;}
+@keyframes cf{0%{opacity:1;transform:translateY(-10px)rotate(0)}100%{opacity:0;transform:translateY(300px)rotate(720deg)}}
+
+/* emoji rain */
+.er{position:fixed;top:-60px;pointer-events:none;
+  font-size:26px;z-index:8000;animation:ef linear forwards;}
+@keyframes ef{to{transform:translateY(110vh)rotate(360deg);opacity:0}}
+
+/* ---- NAV ---- */
+#nav{
+  position:fixed;
+  bottom:calc(20px + var(--safe-bot));
+  left:50%;transform:translateX(-50%);
+  z-index:100;display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.05);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.09);border-radius:100px;
+  padding:8px 16px;
+}
+.nb{background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.5);font-size:20px;padding:4px 8px;
+  border-radius:8px;transition:color .2s,background .2s;
+  font-family:'DM Sans',sans-serif;-webkit-appearance:none;}
+.nb:hover,.nb:active{color:#fff;background:rgba(255,255,255,.08);}
+.nb:disabled{opacity:.2;pointer-events:none;}
+#ctr{font-size:11px;font-weight:600;letter-spacing:1px;
+  color:rgba(255,255,255,.38);min-width:40px;text-align:center;}
+
+/* progress dots */
+#dots{
+  position:fixed;
+  top:calc(16px + var(--safe-top));
+  left:50%;transform:translateX(-50%);
+  z-index:100;display:flex;gap:4px;flex-wrap:wrap;
+  justify-content:center;max-width:260px;
+}
+.dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.16);transition:all .3s;}
+.dot.active{background:var(--pink);width:14px;border-radius:2px;}
+.dot.done{background:rgba(255,92,138,.38);}
+
+/* audio btn */
+#abtn{
+  position:fixed;
+  top:calc(14px + var(--safe-top));
+  right:16px;z-index:200;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:50%;width:38px;height:38px;
+  cursor:pointer;color:rgba(255,255,255,.6);
+  font-size:15px;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  -webkit-appearance:none;
+}
+#abtn:hover,#abtn:active{background:rgba(255,255,255,.14);color:#fff;}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="bgc"></div>
+<div id="dots"></div>
+<button id="abtn" onclick="toggleAudio()">🎵</button>
+
+<div id="sw">
+
+<!-- S0: INTRO -->
+<div class="slide t-intro" id="s0">
+  <div class="yr">25</div>
+  <div class="inner">
+    <span class="lbl fi" style="animation-delay:.1s">A year in review</span>
+    <span class="emo">💌</span>
+    <h1 class="ttl fi" style="font-size:clamp(32px,8vw,48px);animation-delay:.2s">Girlfriend<br><em>Wrapped.</em></h1>
+    <div class="div fi" style="animation-delay:.35s"></div>
+    <p class="bod fi" style="animation-delay:.45s">One year. Too many sushi rolls. One spiral balloon arch. Zero weekends without Saket.</p>
+    <div class="media-wrap hero fi" style="animation-delay:.55s">
+      <img src="assets/couple1.jpg" alt="Us" loading="eager">
+    </div>
+    <div class="fi" style="animation-delay:.65s;margin-top:10px;">
+      <span class="pill pp">2024–25</span>
+      <span class="pill pl">Us. Always. 💕</span>
+    </div>
+  </div>
+</div>
+
+<!-- S1: STATS -->
+<div class="slide t-pink" id="s1">
+  <div class="inner">
+    <span class="lbl">The year, by numbers</span>
+    <span class="emo">📊</span>
+    <h2 class="ttl fi" style="animation-delay:.15s">Pretty impressive<br><em>tbh.</em></h2>
+    <div class="sg fi" style="animation-delay:.25s">
+      <div class="sg-i"><div class="sg-n cu" data-t="50">0</div><div class="sg-l">Dates 📅</div></div>
+      <div class="sg-i"><div class="sg-n cu" data-t="4">0</div><div class="sg-l">Sushi trips/month 🍣</div></div>
+      <div class="sg-i"><div class="sg-n" style="font-size:clamp(16px,4.5vw,20px)">₹20,000</div><div class="sg-l">On sushi alone 💸</div></div>
+      <div class="sg-i"><div class="sg-n cu" data-t="100">0</div><div class="sg-l">Birthday balloons 🎈</div></div>
+    </div>
+    <div class="media-wrap fi" style="animation-delay:.4s;margin-top:14px;">
+      <img src="assets/couple1.jpg" alt="Us" style="max-height:180px;">
+    </div>
+  </div>
+</div>
+
+<!-- S2: SAKET -->
+<div class="slide t-amber" id="s2">
+  <div class="inner">
+    <span class="lbl">Most visited location</span>
+    <span class="emo">🛍️</span>
+    <h2 class="ttl fi" style="font-family:'Syne',sans-serif;font-size:clamp(38px,10vw,58px);font-weight:800;animation-delay:.15s">SAKET,<br>DELHI.</h2>
+    <div class="div fi" style="animation-delay:.28s"></div>
+    <p class="bod fi" style="animation-delay:.38s">Saturday? <strong>Saket.</strong> Sunday? Saket. Bored? Saket. Sad? Saket. Celebrating? SAKET. DLF should give you a reserved parking spot with your names on it.</p>
+    <span class="pill pa fi" style="animation-delay:.48s">Every. Single. Weekend. 🗺️</span>
+  </div>
+</div>
+
+<!-- S3: FOOD ERA -->
+<div class="slide t-mint" id="s3">
+  <div class="inner">
+    <span class="lbl">Food discoveries of the year</span>
+    <span class="emo">🍽️</span>
+    <h2 class="ttl fi" style="animation-delay:.15s">The <em>Food Era</em><br>Was Very Real.</h2>
+    <div class="media-wrap fi" style="animation-delay:.25s">
+      <video src="assets/sushi.mp4" autoplay muted loop playsinline webkit-playsinline
+        style="max-height:180px;" poster=""></video>
+    </div>
+    <div class="food-list fi" style="animation-delay:.35s">
+      <p>🍣 <strong>Yum Yum Cha</strong> — sushi 4x/month, ₹20k gone, zero regrets</p>
+      <p>☕ <strong>Tau Ka Dhaba</strong> — late night chai, mid but make it sacred</p>
+      <p>🍚 <strong>Thalairaj Biryani</strong> — changed everything forever</p>
+      <p>🌯 <strong>California Burrito Bowl</strong> — "we're being healthy" 😇</p>
+      <p>🍳 <strong>Poha</strong> — every weekend, no exceptions, no questions</p>
+    </div>
+  </div>
+</div>
+
+<!-- S4: QUIZ GAME -->
+<div class="slide t-lav" id="s4">
+  <div class="inner">
+    <span class="lbl">🎮 Mini game</span>
+    <span class="emo">🤔</span>
+    <h2 class="ttl fi" style="animation-delay:.15s">How much did we<br><em>spend on sushi?</em></h2>
+    <div class="qopts fi" style="animation-delay:.25s">
+      <button class="qo" onclick="qa(this,false)">₹5,000</button>
+      <button class="qo" onclick="qa(this,false)">₹8,000</button>
+      <button class="qo" onclick="qa(this,true)">₹20,000</button>
+      <button class="qo" onclick="qa(this,false)">₹35,000</button>
+    </div>
+    <p class="qres" id="qres"></p>
+  </div>
+</div>
+
+<!-- S5: TRAVEL -->
+<div class="slide t-coral" id="s5">
+  <div class="inner">
+    <span class="lbl">Trips taken together</span>
+    <span class="emo">✈️</span>
+    <h2 class="ttl fi" style="animation-delay:.15s">The Year We<br><em>Went Everywhere.</em></h2>
+    <div class="food-list fi" style="animation-delay:.25s">
+      <p>🏰 <strong>Jaipur (New Year's)</strong> — her birth city, back after years</p>
+      <p>🏡 <strong>His hometown + Nainital</strong> — recreated a 15-yr-old photo</p>
+      <p>🌊 <strong>Rishikesh</strong> — just a detour. feet in Ganges. perfect.</p>
+      <p>🎨 <strong>Holi in hometown</strong> — chaotic, colourful, glorious</p>
+      <p>☕ <strong>Cold coffee at Chaupati</strong> — best thing she ever tasted</p>
+    </div>
+    <div class="media-wrap fi" style="animation-delay:.4s;margin-top:10px;">
+      <img src="assets/couple2.heic" alt="Travel" style="max-height:160px;"
+        onerror="this.src='assets/couple1.jpg'">
+    </div>
+  </div>
+</div>
+
+<!-- S6: SHE CAME HOME -->
+<div class="slide t-blue" id="s6">
+  <div class="inner">
+    <span class="lbl">Historic moment</span>
+    <span class="emo">🏔️</span>
+    <h2 class="ttl fi" style="animation-delay:.15s">She Came Home.<br><em>Nobody Saw It Coming.</em></h2>
+    <div class="div fi" style="animation-delay:.28s"></div>
+    <p class="bod fi" style="animation-delay:.38s">Nainital. Cold coffee from <strong>Chaupati.</strong> A childhood photo recreated after <strong>15 years.</strong> Holi with the whole family. The stars aligned and she was there.</p>
+    <div class="media-wrap hero fi" style="animation-delay:.5s">
+      <img src="assets/couple3.heic" alt="Nainital" style="max-height:240px;"
+        onerror="this.src='assets/couple1.jpg'">
+    </div>
+  </div>
+</div>
+
+<!-- S7: SCRATCH CARD -->
+<div class="slide t-pink" id="s7">
+  <div class="inner">
+    <span class="lbl">🎮 Scratch to reveal</span>
+    <span class="emo">🪙</span>
+    <h2 class="ttl fi" style="animation-delay:.15s">Scratch the card<br><em>to unlock a secret.</em></h2>
+    <div class="sc-wrap fi" style="animation-delay:.25s">
+      <div class="sc-reveal"><p>"Tup tup time is the best time in the world. Patent pending. Oxford updating."</p></div>
+      <canvas id="sc" width="260" height="88"></canvas>
+    </div>
+    <p class="sc-hint" id="sch">👆 use your finger!</p>
+  </div>
+</div>
+
+<!-- S8: BIRTHDAY -->
+<div class="slide t-pink" id="s8">
+  <div class="inner">
+    <span class="lbl">Birthday deployed</span>
+    <span class="emo" id="bemo">🎈</span>
+    <div class="big fi" style="animation-delay:.15s">100</div>
+    <h2 class="ttl fi" style="animation-delay:.25s">Balloons. By hand.<br><em>iPhone 17. Hauz Khas.</em></h2>
+    <div class="div fi" style="animation-delay:.35s"></div>
+    <p class="bod fi" style="animation-delay:.45s">He tied 100 balloons into a <strong>spiral arch.</strong> Took her to <strong>Hauz Khas Lake for sunset.</strong> Then gifted her an iPhone 17. Boyfriend of the year. Uncontested.</p>
+  </div>
+</div>
+
+<!-- S9: CHAOS + MANBOOB -->
+<div class="slide t-coral" id="s9">
+  <div class="inner">
+    <span class="lbl">Year in chaos</span>
+    <span class="emo">🩺</span>
+    <h2 class="ttl fi" style="animation-delay:.15s">Hospital Homies<br><em>&amp; The Chest Incident.</em></h2>
+    <div class="div fi" style="animation-delay:.25s"></div>
+    <p class="bod fi" style="animation-delay:.35s"><strong>Vertigo. Torn ligament. Multiple ankle twists.</strong> Each other's personal ambulance all year. And then — there's this video.</p>
+    <div class="media-wrap fi" style="animation-delay:.45s">
+      <video src="assets/manboob.mp4" controls playsinline webkit-playsinline
+        style="max-height:200px;"></video>
+    </div>
+    <p class="media-cap fi" style="animation-delay:.55s">she touched. she squeezed. there is video. sunny is a witness. 😂</p>
+    <div style="margin-top:8px;" class="fi" style="animation-delay:.6s">
+      <span class="pill pp">Chronically injured</span>
+      <span class="pill pl">Deeply in love 💕</span>
+    </div>
+  </div>
+</div>
+
+<!-- S10: HER ACHIEVEMENTS + SKINCARE -->
+<div class="slide t-lav" id="s10">
+  <div class="inner">
+    <span class="lbl">🎮 Tap to unlock</span>
+    <span class="emo">👑</span>
+    <h2 class="ttl fi" style="animation-delay:.15s">Her achievements<br><em>this year:</em></h2>
+    <div class="media-wrap fi" style="animation-delay:.22s">
+      <img src="assets/skincare.jpg" alt="Skincare queen" style="max-height:180px;">
+    </div>
+    <p class="media-cap" style="margin-bottom:4px;">when the face mask hits different 😭</p>
+    <div class="tap-box fi" style="animation-delay:.32s" onclick="tapOpen(this)">
+      <div class="tap-cover">TAP TO SEE HER WINS 👆</div>
+      <div class="tap-content">
+        👑 Won most Insta challenges<br>
+        🪁 Certified kite-flying pro<br>
+        💃 Taught him Jaunsari dance<br>
+        🧖 Got him into skincare (see above)<br>
+        💎 Her earring taste: unnervingly good<br>
+        🌹 Stunned in a corset saree<br>
+        😂 Video evidence of chest violation<br>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S11: SMALL MOMENTS + KITE -->
+<div class="slide t-gold" id="s11">
+  <div class="inner">
+    <span class="lbl">Moments that made it</span>
+    <span class="emo">✨</span>
+    <h2 class="ttl fi" style="animation-delay:.15s">The small things<br><em>that weren't small.</em></h2>
+    <div class="media-wrap fi" style="animation-delay:.22s">
+      <video src="assets/kite.mp4" autoplay muted loop playsinline webkit-playsinline
+        style="max-height:180px;"></video>
+    </div>
+    <p class="media-cap">her flying kites like the pro she is 🪁</p>
+    <div class="food-list fi" style="animation-delay:.32s;margin-top:6px;">
+      <p>🪖 Bargained rent with the army man landlord. Won.</p>
+      <p>👟 Started walking. 7 days. RIP. Shoes still by the door.</p>
+      <p>💸 Shahpur Jat: lehengas ₹40k. "We're just looking."</p>
+      <p>🍛 Rajasthali: 10/10 first time, "meh" every time after</p>
+    </div>
+  </div>
+</div>
+
+<!-- S12: HER SONG + DANCE -->
+<div class="slide t-lav" id="s12">
+  <div class="inner">
+    <span class="lbl">Her anthem</span>
+    <span class="emo">🎵</span>
+    <div class="wave" id="wv"></div>
+    <h2 class="ttl fi" style="font-style:italic;animation-delay:.2s">"Ke Mahi Tainu<br>Khabar Nahi..."</h2>
+    <div class="media-wrap hero fi" style="animation-delay:.3s">
+      <video src="assets/dance.mp4" autoplay muted loop playsinline webkit-playsinline
+        style="max-height:240px;"></video>
+    </div>
+    <p class="media-cap fi" style="animation-delay:.4s">her dancing to it — this is your sign she loves you 💜</p>
+    <div class="div fi" style="animation-delay:.5s"></div>
+    <p class="bod fi" style="animation-delay:.55s">Maine jaana tujhe, meri khata nahi. She played it on loop. <strong>Some songs find you at exactly the right time.</strong></p>
+    <span class="pill pl fi" style="animation-delay:.65s">Song of the year 🎶</span>
+  </div>
+</div>
+
+<!-- S13: FINAL -->
+<div class="slide t-final" id="s13">
+  <div class="inner">
+    <span class="emo">❤️</span>
+    <h2 class="ttl fi" style="font-size:clamp(26px,6vw,38px);animation-delay:.15s">A year of us.<br><em>What a year.</em></h2>
+    <div class="media-wrap fi" style="animation-delay:.25s">
+      <img src="assets/couple2.heic" alt="Us" style="max-height:200px;"
+        onerror="this.src='assets/couple1.jpg'">
+    </div>
+    <div class="div fi" style="animation-delay:.38s"></div>
+    <p class="bod fi" style="animation-delay:.45s;font-size:clamp(11px,3vw,13px);line-height:1.9">
+      Chaotic. Delicious. Healing. Dancing.<br>
+      Limping. Crying. Laughing. Sushi-ing.<br>
+      Bargaining with army uncles. Glowing.<br>
+      <strong>Always together.</strong>
+    </p>
+    <div style="margin-top:12px;display:flex;flex-wrap:wrap;justify-content:center;gap:4px;" class="fi" style="animation-delay:.55s">
+      <span class="pill pp">More Saket Saturdays</span>
+      <span class="pill pm">More sushi 🍣</span>
+      <span class="pill pl">More tup tup 🛋️</span>
+      <span class="pill pa">More midnight chai ☕</span>
+      <span class="pill pg">More everything with you</span>
+    </div>
+    <div class="div" style="margin-top:14px;"></div>
+    <p class="fi" style="font-family:'Instrument Serif',serif;font-style:italic;
+      color:rgba(255,255,255,.42);font-size:14px;margin-top:4px;animation-delay:.65s">
+      Happy Anniversary. 💌
+    </p>
+  </div>
+</div>
+
+</div><!-- /sw -->
+
+<div id="nav">
+  <button class="nb" id="pb" onclick="go(-1)" disabled>←</button>
+  <span id="ctr">1 / 14</span>
+  <button class="nb" id="nb" onclick="go(1)">→</button>
+</div>
+
+<script>
+// ===================== CORE =====================
+const TOTAL = 14;
+let cur = 0;
+
+// cursor
+const curEl = document.getElementById('cur');
+document.addEventListener('mousemove', e => {
+  curEl.style.left = e.clientX + 'px';
+  curEl.style.top = e.clientY + 'px';
+});
+
+// bg blobs
+const bgc = document.getElementById('bgc');
+const bc = ['#FF5C8A','#FFB347','#A8E6CF','#C9B8FF','#ff7c5c'];
+for(let i=0;i<10;i++){
+  const s=document.createElement('div'); s.className='bs';
+  const z=60+Math.random()*260;
+  s.style.cssText=`width:${z}px;height:${z}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${bc[i%5]};animation-duration:${9+Math.random()*10}s;animation-delay:${-Math.random()*8}s;`;
+  bgc.appendChild(s);
+}
+
+// dots
+const dotsEl = document.getElementById('dots');
+for(let i=0;i<TOTAL;i++){
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' active':'');
+  dotsEl.appendChild(d);
+}
+function updateDots(){
+  dotsEl.querySelectorAll('.dot').forEach((d,i)=>{
+    d.className='dot'+(i===cur?' active':i<cur?' done':'');
+  });
+}
+
+// ===================== NAVIGATE =====================
+function go(dir){
+  const slides = document.querySelectorAll('.slide');
+  const prev = cur;
+  cur = Math.max(0, Math.min(TOTAL-1, cur+dir));
+  if(prev===cur) return;
+
+  slides[prev].classList.remove('active');
+  slides[prev].classList.add(dir>0 ? 'exit-left' : 'exit-right');
+  setTimeout(()=>slides[prev].classList.remove('exit-left','exit-right'), 550);
+
+  slides[cur].classList.add('active');
+  // scroll inner to top on enter
+  const inner = slides[cur].querySelector('.inner');
+  if(inner) inner.scrollTop = 0;
+
+  document.getElementById('pb').disabled = cur===0;
+  document.getElementById('nb').disabled = cur===TOTAL-1;
+  document.getElementById('ctr').textContent = `${cur+1} / ${TOTAL}`;
+  updateDots();
+  onEnter(cur);
+  audioOnSlide(prev, cur);
+}
+
+// init
+document.getElementById('s0').classList.add('active');
+
+// keyboard
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') go(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') go(-1);
+});
+
+// swipe + click nav on slide
+let tx=0, ty=0, tMoved=false;
+document.addEventListener('touchstart', e=>{
+  tx=e.touches[0].clientX; ty=e.touches[0].clientY; tMoved=false;
+},{passive:true});
+document.addEventListener('touchmove', e=>{
+  if(Math.abs(e.touches[0].clientX-tx)>8||Math.abs(e.touches[0].clientY-ty)>8) tMoved=true;
+},{passive:true});
+document.addEventListener('touchend', e=>{
+  const dx=tx-e.changedTouches[0].clientX;
+  const dy=Math.abs(ty-e.changedTouches[0].clientY);
+  if(Math.abs(dx)>50 && Math.abs(dx)>dy) go(dx>0?1:-1);
+},{passive:true});
+
+// tap-to-advance (only on slide body, not interactive elements)
+document.getElementById('sw').addEventListener('click', e=>{
+  if(tMoved) return;
+  const skip = '.nb,.qo,.tap-box,#abtn,#sc,video,button,input';
+  if(e.target.closest(skip)) return;
+  // right half = next, left half = prev
+  const half = window.innerWidth/2;
+  if(e.clientX > half) go(1); else go(-1);
+});
+
+// heart particles on tap
+document.addEventListener('click', e=>{
+  if(e.target.closest('.nb,.qo,.tap-box,#abtn,#sc,video,button')) return;
+  const ems = ['❤️','💕','✨','💗','🩷','💖'];
+  for(let i=0;i<3;i++){
+    const h=document.createElement('div'); h.className='hp';
+    h.textContent=ems[Math.floor(Math.random()*ems.length)];
+    h.style.cssText=`left:${e.clientX+(-18+Math.random()*36)}px;top:${e.clientY}px;animation-delay:${Math.random()*.15}s`;
+    document.body.appendChild(h); setTimeout(()=>h.remove(),1300);
+  }
+});
+
+// ===================== SLIDE ENTER =====================
+function onEnter(idx){
+  if(idx===1) countUp();
+  if(idx===7) initScratch();
+  if(idx===8) balloonRain();
+  if(idx===12) waveAnim();
+  if(idx===13) confetti();
+  emojiRain(idx);
+}
+
+// count up
+function countUp(){
+  document.querySelectorAll('.cu').forEach(el=>{
+    const t=+el.dataset.t; let v=0;
+    const step=Math.ceil(t/25);
+    const iv=setInterval(()=>{ v=Math.min(v+step,t); el.textContent=v; if(v>=t)clearInterval(iv); },45);
+  });
+}
+
+// emoji rain per slide
+const EMOJIS = {
+  0:['💌','💕','🌸','✨'],
+  2:['🛍️','🏙️','🧋'],
+  3:['🍣','🌯','🍚','🍳','☕'],
+  4:['🍣','💸'],
+  5:['✈️','🏔️','🌊','🎆'],
+  6:['🏡','🌸','☕','❄️'],
+  8:['🎈','🎉','🎊','🩷'],
+  9:['🩺','😂'],
+  11:['🪁','✨','🌿'],
+  12:['🎵','🎶','💜','🌸'],
+  13:['❤️','💕','✨','🌸','💌'],
+};
+function emojiRain(idx){
+  const es=EMOJIS[idx]; if(!es) return;
+  for(let i=0;i<7;i++){
+    setTimeout(()=>{
+      const e=document.createElement('div'); e.className='er';
+      e.textContent=es[Math.floor(Math.random()*es.length)];
+      e.style.cssText=`left:${Math.random()*100}vw;animation-duration:${2.2+Math.random()*2}s;font-size:${18+Math.random()*18}px;animation-delay:0s;`;
+      document.body.appendChild(e); setTimeout(()=>e.remove(),5000);
+    }, i*220+Math.random()*200);
+  }
+}
+
+// balloon rain
+function balloonRain(){
+  for(let i=0;i<22;i++){
+    setTimeout(()=>{
+      const b=document.createElement('div'); b.className='er';
+      b.textContent=['🎈','🎉','🎊','🩷','💗'][Math.floor(Math.random()*5)];
+      b.style.cssText=`left:${Math.random()*100}vw;animation-duration:${2.5+Math.random()*2}s;font-size:${22+Math.random()*22}px;`;
+      document.body.appendChild(b); setTimeout(()=>b.remove(),5500);
+    }, i*160);
+  }
+}
+
+// wave bars
+function waveAnim(){
+  const wv=document.getElementById('wv'); if(wv.children.length) return;
+  for(let i=0;i<16;i++){
+    const b=document.createElement('div'); b.className='wb';
+    b.style.animationDelay=`${i*0.07}s`; wv.appendChild(b);
+  }
+}
+
+// confetti
+function confetti(){
+  const sl=document.getElementById('s13');
+  const cols=['#FF5C8A','#FFB347','#A8E6CF','#C9B8FF','#fff','#ff7c5c'];
+  for(let i=0;i<60;i++){
+    const c=document.createElement('div'); c.className='cp';
+    c.style.cssText=`left:${Math.random()*100}%;top:0;background:${cols[Math.floor(Math.random()*cols.length)]};animation-delay:${Math.random()*2.2}s;`;
+    sl.appendChild(c); setTimeout(()=>c.remove(),5500);
+  }
+}
+
+// ===================== SCRATCH =====================
+let scratchDone = false;
+function initScratch(){
+  if(scratchDone) return; scratchDone=true;
+  const cv=document.getElementById('sc');
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle='#7a1040';
+  ctx.fillRect(0,0,260,88);
+  ctx.font='bold 13px DM Sans';
+  ctx.fillStyle='rgba(255,255,255,.55)';
+  ctx.textAlign='center';
+  ctx.fillText('✨ SCRATCH HERE ✨',130,50);
+  let down=false;
+  function sc(x,y){
+    ctx.globalCompositeOperation='destination-out';
+    ctx.beginPath(); ctx.arc(x,y,20,0,Math.PI*2); ctx.fill();
+  }
+  function pos(e,r){ return e.touches
+    ? {x:e.touches[0].clientX-r.left, y:e.touches[0].clientY-r.top}
+    : {x:e.clientX-r.left, y:e.clientY-r.top}; }
+  function check(){
+    const d=ctx.getImageData(0,0,260,88).data;
+    let t=0; for(let i=3;i<d.length;i+=4) if(d[i]<128) t++;
+    if(t/(260*88)>.55){
+      cv.style.transition='opacity .5s'; cv.style.opacity='0';
+      document.getElementById('sch').textContent='💕 there it is!';
+      setTimeout(()=>cv.remove(),600);
+    }
+  }
+  cv.addEventListener('mousedown',e=>{down=true;const r=cv.getBoundingClientRect();const p=pos(e,r);sc(p.x,p.y);});
+  cv.addEventListener('mousemove',e=>{if(!down)return;const r=cv.getBoundingClientRect();const p=pos(e,r);sc(p.x,p.y);check();});
+  cv.addEventListener('mouseup',()=>down=false);
+  cv.addEventListener('touchstart',e=>{e.preventDefault();down=true;const r=cv.getBoundingClientRect();const p=pos(e,r);sc(p.x,p.y);},{passive:false});
+  cv.addEventListener('touchmove',e=>{e.preventDefault();if(!down)return;const r=cv.getBoundingClientRect();const p=pos(e,r);sc(p.x,p.y);check();},{passive:false});
+  cv.addEventListener('touchend',()=>down=false);
+}
+
+// ===================== QUIZ =====================
+function qa(el, correct){
+  if(document.querySelector('.qo.correct')) return;
+  if(correct){
+    el.classList.add('correct');
+    document.getElementById('qres').textContent='✅ ₹20,000 on sushi. No regrets whatsoever.';
+    document.getElementById('qres').style.color='#a8e6cf';
+    for(let i=0;i<8;i++) setTimeout(()=>{
+      const e=document.createElement('div');e.className='hp';
+      e.textContent='🍣';e.style.cssText=`left:${20+Math.random()*60}vw;top:40vh;animation-delay:${Math.random()*.2}s`;
+      document.body.appendChild(e);setTimeout(()=>e.remove(),1400);
+    },i*120);
+  } else {
+    el.classList.add('wrong');
+    document.getElementById('qres').textContent='❌ Try again...';
+    document.getElementById('qres').style.color='#ff8ab0';
+    setTimeout(()=>el.classList.remove('wrong'),700);
+  }
+}
+
+// ===================== TAP REVEAL =====================
+function tapOpen(el){
+  if(el.classList.contains('open')) return;
+  el.classList.add('open');
+  el.style.background='rgba(201,184,255,.1)';
+  el.style.borderColor='rgba(201,184,255,.3)';
+  for(let i=0;i<10;i++) setTimeout(()=>{
+    const s=document.createElement('span');
+    s.textContent=['✨','💜','👑','🩷'][Math.floor(Math.random()*4)];
+    s.style.cssText=`position:absolute;font-size:16px;left:${Math.random()*90}%;top:${Math.random()*80}%;opacity:0;animation:eP .4s ease forwards;animation-delay:${Math.random()*.25}s;pointer-events:none;`;
+    el.appendChild(s); setTimeout(()=>s.remove(),700);
+  },i*50);
+}
+
+// ===================== AUDIO ENGINE =====================
+// Per-slide track map — same track on consecutive slides = no restart
+const SLIDE_TRACK = {
+  0:'upbeat', 1:'upbeat',
+  2:'movebody',
+  3:'jazz',    4:'jazz',
+  5:'gerua',   6:'gerua',
+  7:'aashiqui',
+  8:'party',
+  9:'johnny',
+  10:'movebody',
+  11:'buddha',
+  12:'tainu',
+  13:'gerua',
+};
+
+const players = {}; // track key -> Audio element (lazy init)
+let currentTrack = null;
+let audioOn = false;
+let autoStarted = false;
+const FADE = 700;   // ms
+const VOL = 0.72;
+
+function getPlayer(key){
+  if(!players[key]){
+    const a = new Audio(`assets/${key}.mp3`);
+    a.loop = true;
+    a.volume = 0;
+    a.preload = 'auto';
+    // Smooth loop: dip before end, rise after restart
+    let dipActive = false;
+    a.addEventListener('timeupdate', ()=>{
+      if(!audioOn || currentTrack!==key) return;
+      const rem = a.duration - a.currentTime;
+      if(!isNaN(rem) && rem < 1.2 && !dipActive){
+        dipActive = true; fadeTo(a, 0.15, 500);
+      } else if(a.currentTime < 0.8 && dipActive){
+        dipActive = false; fadeTo(a, VOL, 600);
+      }
+    });
+    players[key] = a;
+  }
+  return players[key];
+}
+
+let fadeTimer = null;
+function fadeTo(audioEl, target, ms){
+  clearInterval(fadeTimer);
+  const start = audioEl.volume;
+  const diff = target - start;
+  const steps = 24;
+  const iv = ms/steps;
+  let s=0;
+  fadeTimer = setInterval(()=>{
+    s++;
+    const t=s/steps;
+    const e=t<.5?2*t*t:-1+(4-2*t)*t;
+    audioEl.volume = Math.max(0,Math.min(1,start+diff*e));
+    if(s>=steps){ audioEl.volume=target; clearInterval(fadeTimer); }
+  }, iv);
+}
+
+function audioOnSlide(prevIdx, nextIdx){
+  if(!audioOn) return;
+  const prevKey = SLIDE_TRACK[prevIdx];
+  const nextKey = SLIDE_TRACK[nextIdx];
+  if(prevKey === nextKey) return; // same track — let it play on
+  // fade out prev
+  const prevP = players[prevKey];
+  if(prevP){ fadeTo(prevP, 0, FADE); setTimeout(()=>{ prevP.pause(); prevP.currentTime=0; }, FADE+80); }
+  // fade in next
+  const nextP = getPlayer(nextKey);
+  nextP.currentTime = 0;
+  nextP.play().catch(()=>{});
+  fadeTo(nextP, VOL, FADE);
+  currentTrack = nextKey;
+}
+
+function startAudio(slideIdx){
+  const key = SLIDE_TRACK[slideIdx];
+  const p = getPlayer(key);
+  p.currentTime = 0;
+  p.play().catch(()=>{});
+  fadeTo(p, VOL, 1000);
+  currentTrack = key;
+  audioOn = true;
+  document.getElementById('abtn').textContent = '🔇';
+  document.getElementById('abtn').style.background = 'rgba(255,92,138,.22)';
+}
+
+function toggleAudio(){
+  if(!audioOn){
+    startAudio(cur);
+  } else {
+    const p = players[currentTrack];
+    if(p){ fadeTo(p, 0, FADE); setTimeout(()=>p.pause(), FADE+80); }
+    audioOn = false;
+    document.getElementById('abtn').textContent = '🎵';
+    document.getElementById('abtn').style.background = 'rgba(255,255,255,.07)';
+  }
+}
+
+// Auto-start on first interaction
+document.addEventListener('click', ()=>{
+  if(autoStarted) return; autoStarted=true;
+  startAudio(cur);
+},{ once:true });
+document.addEventListener('touchend', ()=>{
+  if(autoStarted) return; autoStarted=true;
+  startAudio(cur);
+},{ once:true, passive:true });
+</script>
+</body>
+</html>
